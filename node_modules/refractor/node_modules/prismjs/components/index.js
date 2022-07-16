@@ -1,56 +1,82 @@
-const components = require('../components.js');
-const getLoader = require('../dependencies');
+var components = require('../components.js');
+var peerDependentsMap = null;
 
+function getPeerDependentsMap() {
+	var peerDependentsMap = {};
+	Object.keys(components.languages).forEach(function (language) {
+		if (language === 'meta') {
+			return false;
+		}
+		if (components.languages[language].peerDependencies) {
+			var peerDependencies = components.languages[language].peerDependencies;
+			if (!Array.isArray(peerDependencies)) {
+				peerDependencies = [peerDependencies];
+			}
+			peerDependencies.forEach(function (peerDependency) {
+				if (!peerDependentsMap[peerDependency]) {
+					peerDependentsMap[peerDependency] = [];
+				}
+				peerDependentsMap[peerDependency].push(language);
+			});
+		}
+	});
+	return peerDependentsMap;
+}
 
-/**
- * The set of all languages which have been loaded using the below function.
- *
- * @type {Set<string>}
- */
-const loadedLanguages = new Set();
+function getPeerDependents(mainLanguage) {
+	if (!peerDependentsMap) {
+		peerDependentsMap = getPeerDependentsMap();
+	}
+	return peerDependentsMap[mainLanguage] || [];
+}
 
-/**
- * Loads the given languages and adds them to the current Prism instance.
- *
- * If no languages are provided, __all__ Prism languages will be loaded.
- *
- * @param {string|string[]} [languages]
- * @returns {void}
- */
-function loadLanguages(languages) {
-	if (languages === undefined) {
-		languages = Object.keys(components.languages).filter(l => l != 'meta');
-	} else if (!Array.isArray(languages)) {
-		languages = [languages];
+function loadLanguages(arr, withoutDependencies) {
+	// If no argument is passed, load all components
+	if (!arr) {
+		arr = Object.keys(components.languages).filter(function (language) {
+			return language !== 'meta';
+		});
+	}
+	if (arr && !arr.length) {
+		return;
 	}
 
-	// the user might have loaded languages via some other way or used `prism.js` which already includes some
-	// we don't need to validate the ids because `getLoader` will ignore invalid ones
-	const loaded = [...loadedLanguages, ...Object.keys(Prism.languages)];
+	if (!Array.isArray(arr)) {
+		arr = [arr];
+	}
 
-	getLoader(components, languages, loaded).load(lang => {
-		if (!(lang in components.languages)) {
-			if (!loadLanguages.silent) {
-				console.warn('Language does not exist: ' + lang);
-			}
+	arr.forEach(function (language) {
+		if (!components.languages[language]) {
+			console.warn('Language does not exist ' + language);
 			return;
 		}
+		// Load dependencies first
+		if (!withoutDependencies && components.languages[language].require) {
+			loadLanguages(components.languages[language].require);
+		}
 
-		const pathToLanguage = './prism-' + lang;
-
-		// remove from require cache and from Prism
+		var pathToLanguage = './prism-' + language;
 		delete require.cache[require.resolve(pathToLanguage)];
-		delete Prism.languages[lang];
-
+		delete Prism.languages[language];
 		require(pathToLanguage);
 
-		loadedLanguages.add(lang);
+		// Reload dependents
+		var dependents = getPeerDependents(language).filter(function (dependent) {
+			// If dependent language was already loaded,
+			// we want to reload it.
+			if (Prism.languages[dependent]) {
+				delete Prism.languages[dependent];
+				return true;
+			}
+			return false;
+		});
+		if (dependents.length) {
+			loadLanguages(dependents, true);
+		}
 	});
 }
 
-/**
- * Set this to `true` to prevent all warning messages `loadLanguages` logs.
- */
-loadLanguages.silent = false;
-
-module.exports = loadLanguages;
+module.exports = function (arr) {
+	// Don't expose withoutDependencies
+	loadLanguages(arr);
+};

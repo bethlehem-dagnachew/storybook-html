@@ -1,37 +1,33 @@
 {
-  "name": "storybook",
+  "name": "storybook-html",
   "version": "1.0.0",
-  "description": "simple web using storybook",
-  "main": "index.js",
+  "description": "",
+  "private": true,
   "scripts": {
-    "test": "npm run storybook",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build": "build-storybook -c .storybook -o build",
+    "storybook": "start-storybook",
+    "test": "htmlhint \"src/**/*.html\" && stylelint \"src/**/*.css\" && eslint \"src/**/*.js\""
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bethlehem-dagnachew/storybook-.git"
-  },
-  "keywords": [
-    "storybook"
-  ],
-  "author": "bethlehem dagnachew",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/bethlehem-dagnachew/storybook-/issues"
-  },
-  "homepage": "https://github.com/bethlehem-dagnachew/storybook-#readme",
+  "keywords": [],
+  "author": "Leon Machens",
+  "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.18.6",
-    "@storybook/addon-actions": "^6.5.9",
-    "@storybook/addon-essentials": "^6.5.9",
-    "@storybook/addon-interactions": "^6.5.9",
-    "@storybook/addon-links": "^6.5.9",
-    "@storybook/builder-webpack4": "^6.5.9",
-    "@storybook/html": "^6.5.9",
-    "@storybook/manager-webpack4": "^6.5.9",
-    "@storybook/testing-library": "^0.0.13",
-    "babel-loader": "^8.2.5"
-  },
-  "dependencies": {}
+    "@babel/core": "^7.15.5",
+    "@storybook/addon-a11y": "^6.3.9",
+    "@storybook/addon-actions": "^6.3.9",
+    "@storybook/addon-console": "^1.2.3",
+    "@storybook/addon-design-assets": "^6.2.9",
+    "@storybook/addon-notes": "^5.3.21",
+    "@storybook/addon-postcss": "^2.0.0",
+    "@storybook/addon-viewport": "^6.3.9",
+    "@storybook/html": "^6.3.9",
+    "babel-loader": "^8.2.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "htmlhint": "^0.15.2",
+    "prettier": "^2.4.1",
+    "stylelint": "^13.13.1",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-standard": "^22.0.0"
+  }
 }
