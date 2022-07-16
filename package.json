@@ -1,0 +1,37 @@
+{
+  "name": "storybook",
+  "version": "1.0.0",
+  "description": "simple web using storybook",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run storybook",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bethlehem-dagnachew/storybook-.git"
+  },
+  "keywords": [
+    "storybook"
+  ],
+  "author": "bethlehem dagnachew",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bethlehem-dagnachew/storybook-/issues"
+  },
+  "homepage": "https://github.com/bethlehem-dagnachew/storybook-#readme",
+  "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@storybook/addon-actions": "^6.5.9",
+    "@storybook/addon-essentials": "^6.5.9",
+    "@storybook/addon-interactions": "^6.5.9",
+    "@storybook/addon-links": "^6.5.9",
+    "@storybook/builder-webpack4": "^6.5.9",
+    "@storybook/html": "^6.5.9",
+    "@storybook/manager-webpack4": "^6.5.9",
+    "@storybook/testing-library": "^0.0.13",
+    "babel-loader": "^8.2.5"
+  },
+  "dependencies": {}
+}
